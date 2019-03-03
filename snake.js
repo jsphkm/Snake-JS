@@ -19,6 +19,6 @@ function Snake() {
 
   this.show = () => {
     fill(255);
-    rect(this.x, this.y, 10, 10);
+    rect(this.x, this.y, scl, scl);
   }
 }

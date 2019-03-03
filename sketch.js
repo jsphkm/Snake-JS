@@ -7,6 +7,7 @@ function setup() {
   // Creates canvas with (width, height)
   createCanvas(600, 600);
   s = new Snake();
+  frameRate(10);
 }
 
 // The statements in draw() are executed until the
