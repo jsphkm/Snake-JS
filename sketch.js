@@ -1,8 +1,14 @@
 let snake;
-let rez = 20;
+const rez = 20;
 let food;
 let w;
 let h;
+
+function foodLocation() {
+  const x = floor(random(w));
+  const y = floor(random(h));
+  food = createVector(x, y);
+}
 
 function setup() {
   createCanvas(400, 400);
@@ -12,12 +18,6 @@ function setup() {
   snake = new Snake();
   food = createVector();
   foodLocation();
-}
-
-function foodLocation() {
-  let x = floor(random(w));
-  let y = floor(random(h));
-  food = createVector(x, y);
 }
 
 function keyPressed() {
@@ -42,7 +42,7 @@ function draw() {
   snake.show();
 
   if (snake.endGame()) {
-    print("END GAME");
+    print('END GAME');
     background(255, 0, 0);
     noLoop();
   }
