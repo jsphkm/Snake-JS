@@ -1,41 +1,44 @@
-let s;
-let scl = 20;
+let snake;
+let rez = 20;
+let food;
+let w;
+let h;
 
-// The statements in the setup() function
-// execute once when the program begins
 function setup() {
-  // Creates canvas with (width, height)
-  createCanvas(600, 600);
-  s = new Snake();
-  frameRate(10);
-  food = createVector(random(width), random(height));
+  createCanvas(400, 400);
+  w = floor(width / rez);
+  h = floor(height / rez);
+  frameRate(5);
+  snake = new Snake();
+  food = createVector();
+  foodLocation();
 }
 
-// The statements in draw() are executed until the
-// program is stopped. Each statement is executed in
-// sequence and after the last line is read, the first
-// line is executed again.
-function draw() {
- background(51);
- s.update();
- s.show();
-
- fill(255, 0, 100);
- rect(food.x, food.y, scl, scl);
+function foodLocation() {
+  let x = floor(random(w));
+  let y = floor(random(h));
+  food = createVector(x, y);
 }
 
-// The keyPressed() function is called
-// once every time a key is pressed.
-// The keyCode for the key that was pressed is
-// stored in the keyCode variable.
 function keyPressed() {
-  if (keyCode === UP_ARROW) {
-    s.dir(0, -1);
-  } else if (keyCode === DOWN_ARROW) {
-    s.dir(0, 1);
+  if (keyCode === LEFT_ARROW) {
+    snake.setDir(-1, 0);
   } else if (keyCode === RIGHT_ARROW) {
-    s.dir(1, 0);
-  } else if (keyCode === LEFT_ARROW) {
-    s.dir(-1, 0);
+    snake.setDir(1, 0);
+  } else if (keyCode === DOWN_ARROW) {
+    snake.setDir(0, 1);
+  } else if (keyCode === UP_ARROW) {
+    snake.setDir(0, -1);
   }
+}
+
+function draw() {
+  scale(rez);
+  background(220);
+  snake.update();
+  snake.show();
+
+  noStroke();
+  fill(255, 0, 0);
+  rect(food.x, food.y, 1, 1);
 }
