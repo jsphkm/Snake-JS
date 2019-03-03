@@ -35,6 +35,9 @@ function keyPressed() {
 function draw() {
   scale(rez);
   background(220);
+  if (snake.eat(food)) {
+    foodLocation();
+  }
   snake.update();
   snake.show();
 
