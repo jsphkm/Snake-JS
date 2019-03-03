@@ -8,6 +8,7 @@ function setup() {
   createCanvas(600, 600);
   s = new Snake();
   frameRate(10);
+  food = createVector(random(width), random(height));
 }
 
 // The statements in draw() are executed until the
@@ -18,6 +19,9 @@ function draw() {
  background(51);
  s.update();
  s.show();
+
+ fill(255, 0, 100);
+ rect(food.x, food.y, scl, scl);
 }
 
 // The keyPressed() function is called
