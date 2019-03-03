@@ -13,7 +13,7 @@ class Snake {
   }
 
   update() {
-    let head = this.body[this.body.length - 1].copy();
+    const head = this.body[this.body.length - 1].copy();
     this.body.shift();
     head.x += this.xdir;
     head.y += this.ydir;
@@ -24,14 +24,14 @@ class Snake {
   }
 
   grow() {
-    let head = this.body[this.body.length - 1].copy();
+    const head = this.body[this.body.length - 1].copy();
     this.len += 1;
     this.body.push(head);
   }
 
   endGame() {
-    let x = this.body[this.body.length - 1].x;
-    let y = this.body[this.body.length - 1].y;
+    const x = this.body[this.body.length - 1].x;
+    const y = this.body[this.body.length - 1].y;
     if (x > w - 1 || x < 0 || y > h - 1 || y < 0) {
       return true;
     }
@@ -41,13 +41,13 @@ class Snake {
       if (part.x === x && part.y === y) {
         return true;
       }
-    };
+    }
     return false;
   }
 
   eat(pos) {
-    let x = this.body[this.body.length - 1].x;
-    let y = this.body[this.body.length - 1].y;
+    const x = this.body[this.body.length - 1].x;
+    const y = this.body[this.body.length - 1].y;
     if (x === pos.x && y === pos.y) {
       this.grow();
       return true;
