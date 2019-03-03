@@ -1,4 +1,5 @@
 let s;
+let scl = 20;
 
 // The statements in the setup() function
 // execute once when the program begins
@@ -18,6 +19,10 @@ function draw() {
  s.show();
 }
 
+// The keyPressed() function is called
+// once every time a key is pressed.
+// The keyCode for the key that was pressed is
+// stored in the keyCode variable.
 function keyPressed() {
   if (keyCode === UP_ARROW) {
     s.dir(0, -1);
