@@ -21,13 +21,13 @@ function setup() {
 }
 
 function keyPressed() {
-  if (keyCode === LEFT_ARROW) {
+  if (code === 'ArrowLeft') {
     snake.setDir(-1, 0);
-  } else if (keyCode === RIGHT_ARROW) {
+  } else if (code === 'ArrowRight') {
     snake.setDir(1, 0);
-  } else if (keyCode === DOWN_ARROW) {
+  } else if (code === 'ArrowDown') {
     snake.setDir(0, 1);
-  } else if (keyCode === UP_ARROW) {
+  } else if (code === 'ArrowUp') {
     snake.setDir(0, -1);
   }
 }
