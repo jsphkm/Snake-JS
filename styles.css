@@ -1,0 +1,16 @@
+:root {
+    color-scheme: light dark;
+
+    --bg-color: #eee;
+}
+
+@media (prefers-color-scheme: dark) {
+    :root {
+        --bg-color: #222;
+    }
+}
+
+body {
+    display: flex;
+    justify-content: center;
+}
