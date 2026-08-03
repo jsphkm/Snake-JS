@@ -9,3 +9,8 @@
         --bg-color: #222;
     }
 }
+
+body {
+    display: flex;
+    justify-content: center;
+}
