@@ -18,35 +18,42 @@ export default function Index() {
           },
         ]}
       >
-        <Pressable
-          accessibilityRole="button"
-          onPress={() => setScreen("playing")}
-          style={({ pressed, hovered }) => [
-            styles.button,
-            {
-              width: space.buttonW,
-              height: space.buttonH,
-              backgroundColor: pressed
-                ? colors.buttonPressed
-                : colors.button,
-            },
-            hovered && { cursor: "pointer" as const },
-          ]}
-        >
-          <Text
-            style={{
-              color: colors.buttonLabel,
-              fontFamily: typography.fontFamily,
-              fontSize: typography.body,
-            }}
-          >
-            New Game
-          </Text>
-        </Pressable>
+        { screen === "menu" ? (
+            <Pressable
+              accessibilityRole="button"
+              onPress={() => setScreen("playing")}
+              style={({ pressed, hovered }) => [
+                styles.button,
+                {
+                  width: space.buttonW,
+                  height: space.buttonH,
+                  backgroundColor: pressed
+                    ? colors.buttonPressed
+                    : colors.button,
+                },
+                hovered && { cursor: "pointer" as const },
+              ]}
+            >
+              <Text
+                style={{
+                  color: colors.buttonLabel,
+                  fontFamily: typography.fontFamily,
+                  fontSize: typography.body,
+                }}
+              >
+                New Game
+              </Text>
+            </Pressable>
+        ) : (
+            <Text style={{ color: colors.hint, fontFamily: typography.fontFamily }}>
+                Playing
+            </Text>
+        )}
       </View>
     </View>
   );
 }
+
 
 const styles = StyleSheet.create({
   page: {
