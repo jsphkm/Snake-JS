@@ -1,12 +1,7 @@
 {
-    "name": "snake-js",
-    "private": true,
-    "workspaces": ["rn"],
-    "scripts": {
-      "start": "npm run start -w rn",
-      "web": "npm run web -w rn",
-      "ios": "npm run ios -w rn",
-      "android": "npm run android -w rn",
-      "lint": "npm run lint -w rn"
-    }
+  "name": "snake-js",
+  "private": true,
+  "workspaces": [
+    "rn"
+  ]
 }

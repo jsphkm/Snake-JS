@@ -6,16 +6,16 @@
     "orientation": "portrait",
     "scheme": "rn",
     "userInterfaceStyle": "automatic",
-    "ios": {
-    },
+    "ios": {},
     "android": {
       "predictiveBackGestureEnabled": false
     },
     "web": {
-      "output": "static",
+      "output": "static"
     },
     "plugins": [
-      "expo-router"
+      "expo-router",
+      "expo-image"
     ],
     "experiments": {
       "typedRoutes": true,
