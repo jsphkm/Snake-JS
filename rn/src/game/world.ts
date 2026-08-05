@@ -8,16 +8,22 @@ let snake: Snake | undefined;
 let food: Point | undefined;
 let state: GameState = "menu";
 let score = 0;
-let hiScore = 0;
+let highScore = 0;
 
-/** sketch.js foodLocation() */
+
 function foodLocation() {
-  const x = Math.floor(Math.random() * COLS);
-  const y = Math.floor(Math.random() * ROWS);
-  food = { x, y };
+  for (let attempt = 0; attempt < COLS * ROWS; attempt += 1) {
+    const x = Math.floor(Math.random() * COLS);
+    const y = Math.floor(Math.random() * ROWS);
+    const onSnake = snake?.body.some((part) => part.x === x && part.y === y);
+    if (!onSnake) {
+      food = { x, y };
+      return;
+    }
+  }
+  food = { x: 0, y: 0 };
 }
 
-/** sketch.js startGame() */
 function startGame() {
   snake = new Snake(COLS, ROWS);
   food = { x: 0, y: 0 };
@@ -26,61 +32,36 @@ function startGame() {
   state = "playing";
 }
 
-/**
- * sketch.js drawGame() logic (no drawing).
- * Returns current state so React can sync after mutations.
- */
 function drawGame(): GameState {
   if (!snake || !food || state !== "playing") return state;
 
-  if (snake.eat(food)) {
-    score += 1;
-    if (score > hiScore) hiScore = score;
-    foodLocation();
-  }
+  // Move first so food can be cleared in this same tick (no head/food stack).
+  // Check death before eat: grow() duplicates the head, which would look like
+  // a self-collision.
   snake.update();
 
   if (snake.endGame()) {
     state = "menu";
+    return state;
   }
+
+  if (snake.eat(food)) {
+    score += 1;
+    if (score > highScore) highScore = score;
+    foodLocation();
+  }
+
   return state;
 }
 
-function getState() {
-  return state;
+function getWorld() {
+  return { state, snake, food, score, highScore };
 }
 
-function getSnake() {
-  return snake;
-}
-
-function getFood() {
-  return food;
-}
-
-function getScore() {
-  return score;
-}
-
-function getHiScore() {
-  return hiScore;
-}
-
-/** Seed / restore a persisted high score (e.g. from localStorage). */
-function setHiScore(value: number) {
-  if (Number.isFinite(value) && value > hiScore) {
-    hiScore = Math.floor(value);
+function setHighScore(value: number) {
+  if (Number.isFinite(value) && value > highScore) {
+    highScore = Math.floor(value);
   }
 }
 
-export {
-  foodLocation,
-  startGame,
-  drawGame,
-  getState,
-  getSnake,
-  getFood,
-  getScore,
-  getHiScore,
-  setHiScore,
-};
+export { foodLocation, startGame, drawGame, getWorld, setHighScore };

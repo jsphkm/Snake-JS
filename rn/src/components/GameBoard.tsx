@@ -16,6 +16,18 @@ export function GameBoard({ snake, food, frame, boardSize }: Props) {
 
   return (
     <View style={[styles.grid, { width: boardSize, height: boardSize }]}>
+      {/* Food under snake so the head always paints on top if they overlap */}
+      <View
+        key={`f-${frame}-${food.x}-${food.y}`}
+        style={{
+          position: "absolute",
+          left: food.x * cell,
+          top: food.y * cell,
+          width: cell,
+          height: cell,
+          backgroundColor: "#ff0000",
+        }}
+      />
       {snake.body.map((part, i) => (
         <View
           key={`s-${frame}-${i}-${part.x}-${part.y}`}
@@ -29,17 +41,6 @@ export function GameBoard({ snake, food, frame, boardSize }: Props) {
           }}
         />
       ))}
-      <View
-        key={`f-${frame}-${food.x}-${food.y}`}
-        style={{
-          position: "absolute",
-          left: food.x * cell,
-          top: food.y * cell,
-          width: cell,
-          height: cell,
-          backgroundColor: "#ff0000",
-        }}
-      />
     </View>
   );
 }

@@ -1,14 +1,17 @@
 import { StyleSheet, Text, View } from "react-native";
 import { useTheme } from "../theme-context";
+
 type Props = {
-    score: number; hiScore: number; width: number;
+  score: number;
+  highScore: number;
+  width: number;
 };
 
 function formatScore(n: number) {
   return n.toLocaleString("en-US");
 }
 
-export function ScoreHud({ score, hiScore, width }: Props) {
+export function ScoreHud({ score, highScore, width }: Props) {
   const { colors, typography } = useTheme();
   const font = { fontFamily: typography.fontFamily, color: colors.hint };
 
@@ -23,7 +26,7 @@ export function ScoreHud({ score, hiScore, width }: Props) {
       <View style={[styles.col, styles.colCenter]}>
         <Text style={[styles.label, font]}>HIGH SCORE</Text>
         <Text style={[styles.value, font, { fontSize: typography.body }]}>
-          {formatScore(hiScore)}
+          {formatScore(highScore)}
         </Text>
       </View>
     </View>

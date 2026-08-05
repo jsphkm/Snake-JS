@@ -21,7 +21,7 @@ export default function Index() {
     food,
     frame,
     score,
-    hiScore,
+    highScore,
     activeDir,
     steerBlocked,
     startGame,
@@ -79,7 +79,7 @@ export default function Index() {
   );
 
   const hud = (
-    <ScoreHud score={score} hiScore={hiScore} width={boardSize} />
+    <ScoreHud score={score} highScore={highScore} width={boardSize} />
   );
 
   return (

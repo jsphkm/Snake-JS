@@ -3,12 +3,8 @@ import { Platform } from "react-native";
 import { TICK_MS } from "../game/constants";
 import {
   drawGame,
-  getFood,
-  getHiScore,
-  getScore,
-  getSnake,
-  getState,
-  setHiScore,
+  getWorld,
+  setHighScore,
   startGame as worldStartGame,
   type GameState,
   type Point,
@@ -17,7 +13,7 @@ import type { Snake } from "../game/snake";
 
 export type Dir = { x: number; y: number };
 
-const HI_SCORE_KEY = "snake-hi-score";
+const HIGH_SCORE_KEY = "snake-high-score";
 
 function dirFromKey(code: string, key: string): Dir | null {
   if (code === "ArrowLeft" || key === "ArrowLeft") return { x: -1, y: 0 };
@@ -27,16 +23,18 @@ function dirFromKey(code: string, key: string): Dir | null {
   return null;
 }
 
-function readStoredHiScore(): number {
+function readStoredHighScore(): number {
   if (Platform.OS !== "web" || typeof localStorage === "undefined") return 0;
-  const raw = localStorage.getItem(HI_SCORE_KEY);
+  const raw =
+    localStorage.getItem(HIGH_SCORE_KEY) ??
+    localStorage.getItem("snake-hi-score");
   const n = raw ? Number(raw) : 0;
   return Number.isFinite(n) && n > 0 ? Math.floor(n) : 0;
 }
 
-function writeStoredHiScore(value: number) {
+function writeStoredHighScore(value: number) {
   if (Platform.OS !== "web" || typeof localStorage === "undefined") return;
-  localStorage.setItem(HI_SCORE_KEY, String(value));
+  localStorage.setItem(HIGH_SCORE_KEY, String(value));
 }
 
 export function useSnakeGame() {
@@ -44,7 +42,7 @@ export function useSnakeGame() {
   const [snake, setSnake] = useState<Snake | undefined>();
   const [food, setFood] = useState<Point | undefined>();
   const [score, setScore] = useState(0);
-  const [hiScore, setHiScoreState] = useState(0);
+  const [highScore, setHighScoreState] = useState(0);
   const [activeDir, setActiveDir] = useState<Dir | null>(null);
   /** True when the current activeDir press was rejected as a reverse */
   const [steerBlocked, setSteerBlocked] = useState(false);
@@ -56,29 +54,25 @@ export function useSnakeGame() {
 
   // Restore high score once
   useEffect(() => {
-    const stored = readStoredHiScore();
+    const stored = readStoredHighScore();
     if (stored > 0) {
-      setHiScore(stored);
-      setHiScoreState(stored);
+      setHighScore(stored);
+      setHighScoreState(stored);
     }
   }, []);
 
   const syncFromWorld = useCallback(() => {
-    const nextFood = getFood();
-    const nextState = getState();
-    const nextScore = getScore();
-    const nextHi = getHiScore();
-    const nextSnake = getSnake();
-    setStatus(nextState);
-    setSnake(nextSnake);
-    setFood(nextFood ? { ...nextFood } : undefined);
-    setScore(nextScore);
-    setHiScoreState((prev) => {
-      if (nextHi > prev) writeStoredHiScore(nextHi);
-      return nextHi;
+    const world = getWorld();
+    setStatus(world.state);
+    setSnake(world.snake);
+    setFood(world.food ? { ...world.food } : undefined);
+    setScore(world.score);
+    setHighScoreState((prev) => {
+      if (world.highScore > prev) writeStoredHighScore(world.highScore);
+      return world.highScore;
     });
     setFrame((f) => f + 1);
-    if (nextState === "menu") {
+    if (world.state === "menu") {
       setActiveDir(null);
       setSteerBlocked(false);
     }
@@ -92,7 +86,7 @@ export function useSnakeGame() {
   }, [syncFromWorld]);
 
   const setDirection = useCallback((x: number, y: number) => {
-    const result = getSnake()?.setDir(x, y);
+    const result = getWorld().snake?.setDir(x, y);
     if (result === "ok") {
       setActiveDir({ x, y });
       setSteerBlocked(false);
@@ -173,7 +167,7 @@ export function useSnakeGame() {
     food,
     frame,
     score,
-    hiScore,
+    highScore,
     activeDir,
     steerBlocked,
     startGame: start,
