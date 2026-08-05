@@ -30,7 +30,7 @@ export class Snake {
 
   /**
    * Queue a steer for the next tick.
-   * Reverse is checked against facing() to prevent fast turn to 
+   * Reverse is checked against facing() to prevent fast turn to
    * 180° into the body, and queued steers still block reverse direction.
    */
   setDir(x: number, y: number): "ok" | "blocked" {
@@ -47,37 +47,50 @@ export class Snake {
     return "ok";
   }
 
-  update() {
-    this.xdir = this.nextXdir;
-    this.ydir = this.nextYdir;
-
-    const head = { ...this.body[this.body.length - 1] };
-    this.body.shift();
-    head.x += this.xdir;
-    head.y += this.ydir;
-    this.body.push(head);
-  }
-
-  grow() {
-    const head = { ...this.body[this.body.length - 1] };
-    this.len += 1;
-    this.body.push(head);
-  }
-
-  endGame() {
-    const x = this.body[this.body.length - 1].x;
-    const y = this.body[this.body.length - 1].y;
+  /** True if stepping onto (x, y) would end the game. */
+  wouldCollide(x: number, y: number) {
     if (x > COLS - 1 || x < 0 || y > ROWS - 1 || y < 0) {
       return true;
     }
-
-    for (let i = 0; i < this.body.length - 1; i += 1) {
+    // Skip tail (index 0) — it vacates on this step
+    for (let i = 1; i < this.body.length; i += 1) {
       const part = this.body[i];
       if (part.x === x && part.y === y) {
         return true;
       }
     }
     return false;
+  }
+
+  /**
+   * Apply pending direction and step once.
+   * @returns false if the step would collide (body left unchanged).
+   */
+  advance(): boolean {
+    this.xdir = this.nextXdir;
+    this.ydir = this.nextYdir;
+
+    // Standing still — don't step (and don't treat "stay on head" as a crash)
+    if (this.xdir === 0 && this.ydir === 0) {
+      return true;
+    }
+
+    const head = this.body[this.body.length - 1];
+    const nx = head.x + this.xdir;
+    const ny = head.y + this.ydir;
+    if (this.wouldCollide(nx, ny)) {
+      return false;
+    }
+
+    this.body.shift();
+    this.body.push({ x: nx, y: ny });
+    return true;
+  }
+
+  grow() {
+    const head = { ...this.body[this.body.length - 1] };
+    this.len += 1;
+    this.body.push(head);
   }
 
   eat(pos: { x: number; y: number }) {

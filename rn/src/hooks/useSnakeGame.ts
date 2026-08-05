@@ -44,7 +44,6 @@ export function useSnakeGame() {
   const [score, setScore] = useState(0);
   const [highScore, setHighScoreState] = useState(0);
   const [activeDir, setActiveDir] = useState<Dir | null>(null);
-  /** True when the current activeDir press was rejected as a reverse */
   const [steerBlocked, setSteerBlocked] = useState(false);
   const [frame, setFrame] = useState(0);
   const statusRef = useRef(status);
@@ -52,7 +51,6 @@ export function useSnakeGame() {
   statusRef.current = status;
   activeDirRef.current = activeDir;
 
-  // Restore high score once
   useEffect(() => {
     const stored = readStoredHighScore();
     if (stored > 0) {
@@ -72,7 +70,7 @@ export function useSnakeGame() {
       return world.highScore;
     });
     setFrame((f) => f + 1);
-    if (world.state === "menu") {
+    if (world.state !== "playing") {
       setActiveDir(null);
       setSteerBlocked(false);
     }
@@ -86,6 +84,7 @@ export function useSnakeGame() {
   }, [syncFromWorld]);
 
   const setDirection = useCallback((x: number, y: number) => {
+    if (statusRef.current !== "playing") return;
     const result = getWorld().snake?.setDir(x, y);
     if (result === "ok") {
       setActiveDir({ x, y });
@@ -121,7 +120,7 @@ export function useSnakeGame() {
       const key = e.key;
       const code = e.code;
 
-      if (current === "menu") {
+      if (current === "menu" || current === "dead") {
         if (
           code === "Enter" ||
           code === "Space" ||

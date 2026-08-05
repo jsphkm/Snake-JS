@@ -1,7 +1,7 @@
 import { COLS, ROWS } from "./constants";
 import { Snake } from "./snake";
 
-export type GameState = "menu" | "playing";
+export type GameState = "menu" | "playing" | "dead";
 export type Point = { x: number; y: number };
 
 let snake: Snake | undefined;
@@ -9,7 +9,6 @@ let food: Point | undefined;
 let state: GameState = "menu";
 let score = 0;
 let highScore = 0;
-
 
 function foodLocation() {
   for (let attempt = 0; attempt < COLS * ROWS; attempt += 1) {
@@ -35,13 +34,8 @@ function startGame() {
 function drawGame(): GameState {
   if (!snake || !food || state !== "playing") return state;
 
-  // Move first so food can be cleared in this same tick (no head/food stack).
-  // Check death before eat: grow() duplicates the head, which would look like
-  // a self-collision.
-  snake.update();
-
-  if (snake.endGame()) {
-    state = "menu";
+  if (!snake.advance()) {
+    state = "dead";
     return state;
   }
 

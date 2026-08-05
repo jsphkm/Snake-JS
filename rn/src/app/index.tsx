@@ -30,6 +30,7 @@ export default function Index() {
   } = useSnakeGame();
 
   const travelDir = snake ? snake.facing() : null;
+  const showBoard = (state === "playing" || state === "dead") && !!snake && !!food;
 
   const boardSize = useMemo(() => {
     if (isLandscape) {
@@ -65,14 +66,15 @@ export default function Index() {
         },
       ]}
     >
-      {state === "menu" || !snake || !food ? (
-        <Menu onStart={startGame} />
+      {state === "menu" || !showBoard ? (
+        <Menu onStart={startGame} label="New Game" />
       ) : (
         <GameBoard
           snake={snake}
           food={food}
           frame={frame}
           boardSize={boardSize}
+          flickerHead={state === "dead"}
         />
       )}
     </View>
@@ -100,6 +102,18 @@ export default function Index() {
           <View style={styles.portraitControls}>{controls}</View>
         </>
       )}
+
+      {state === "dead" ? (
+        <View style={[styles.overlay, { pointerEvents: "box-none" }]}>
+          <View
+            style={[
+              styles.overlayScrim,
+              { backgroundColor: colors.page, pointerEvents: "none" },
+            ]}
+          />
+          <Menu onStart={startGame} label="Try Again" />
+        </View>
+      ) : null}
     </View>
   );
 }
@@ -138,5 +152,15 @@ const styles = StyleSheet.create({
   board: {
     alignItems: "center",
     justifyContent: "center",
+  },
+  overlay: {
+    ...StyleSheet.absoluteFillObject,
+    alignItems: "center",
+    justifyContent: "center",
+    zIndex: 10,
+  },
+  overlayScrim: {
+    ...StyleSheet.absoluteFillObject,
+    opacity: 0.45,
   },
 });
