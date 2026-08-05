@@ -1,10 +1,12 @@
-import { Text, View, Pressable, StyleSheet } from "react-native";
-import { useState } from "react";
+import { View, StyleSheet } from "react-native";
 import { useTheme } from "../theme-context";
+import { useSnakeGame } from "../hooks/useSnakeGame";
+import { Menu } from "../components/Menu";
+import { GameBoard } from "../components/GameBoard";
 
 export default function Index() {
-  const { colors, typography, space } = useTheme();
-  const [screen, setScreen] = useState<"menu" | "playing">("menu");
+  const { colors, space } = useTheme();
+  const { state, snake, food, startGame } = useSnakeGame();
 
   return (
     <View style={[styles.page, { backgroundColor: colors.page }]}>
@@ -15,45 +17,19 @@ export default function Index() {
             width: space.board,
             height: space.board,
             backgroundColor: colors.board,
+            overflow: "hidden",
           },
         ]}
       >
-        { screen === "menu" ? (
-            <Pressable
-              accessibilityRole="button"
-              onPress={() => setScreen("playing")}
-              style={({ pressed, hovered }) => [
-                styles.button,
-                {
-                  width: space.buttonW,
-                  height: space.buttonH,
-                  backgroundColor: pressed
-                    ? colors.buttonPressed
-                    : colors.button,
-                },
-                hovered && { cursor: "pointer" as const },
-              ]}
-            >
-              <Text
-                style={{
-                  color: colors.buttonLabel,
-                  fontFamily: typography.fontFamily,
-                  fontSize: typography.body,
-                }}
-              >
-                New Game
-              </Text>
-            </Pressable>
+        {state === "menu" || !snake || !food ? (
+          <Menu onStart={startGame} />
         ) : (
-            <Text style={{ color: colors.hint, fontFamily: typography.fontFamily }}>
-                Playing
-            </Text>
+          <GameBoard snake={snake} food={food} />
         )}
       </View>
     </View>
   );
 }
-
 
 const styles = StyleSheet.create({
   page: {
@@ -64,10 +40,5 @@ const styles = StyleSheet.create({
   board: {
     alignItems: "center",
     justifyContent: "center",
-  },
-  button: {
-    alignItems: "center",
-    justifyContent: "center",
-    cursor: "pointer",
   },
 });
