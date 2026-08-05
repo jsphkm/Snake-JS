@@ -37,6 +37,7 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     marginBottom: 10,
     minHeight: 44,
+    userSelect: "none",
   },
   col: {
     minWidth: 96,
@@ -48,8 +49,10 @@ const styles = StyleSheet.create({
     fontSize: 13,
     letterSpacing: 1,
     opacity: 0.7,
+    userSelect: "none",
   },
   value: {
     marginTop: 2,
+    userSelect: "none",
   },
 });
