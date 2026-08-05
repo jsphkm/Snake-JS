@@ -46,14 +46,15 @@ export function useSnakeGame() {
   const [score, setScore] = useState(0);
   const [hiScore, setHiScoreState] = useState(0);
   const [activeDir, setActiveDir] = useState<Dir | null>(null);
-  /** Forces a re-render after in-place Snake mutations (same object ref). */
+  /** True when the current activeDir press was rejected as a reverse */
+  const [steerBlocked, setSteerBlocked] = useState(false);
   const [frame, setFrame] = useState(0);
   const statusRef = useRef(status);
   const activeDirRef = useRef(activeDir);
   statusRef.current = status;
   activeDirRef.current = activeDir;
 
-  // Restore high score once (web localStorage)
+  // Restore high score once
   useEffect(() => {
     const stored = readStoredHiScore();
     if (stored > 0) {
@@ -67,8 +68,9 @@ export function useSnakeGame() {
     const nextState = getState();
     const nextScore = getScore();
     const nextHi = getHiScore();
+    const nextSnake = getSnake();
     setStatus(nextState);
-    setSnake(getSnake());
+    setSnake(nextSnake);
     setFood(nextFood ? { ...nextFood } : undefined);
     setScore(nextScore);
     setHiScoreState((prev) => {
@@ -78,27 +80,33 @@ export function useSnakeGame() {
     setFrame((f) => f + 1);
     if (nextState === "menu") {
       setActiveDir(null);
+      setSteerBlocked(false);
     }
   }, []);
 
   const start = useCallback(() => {
     worldStartGame();
     setActiveDir(null);
+    setSteerBlocked(false);
     syncFromWorld();
   }, [syncFromWorld]);
 
-  /** Apply steer + show live highlight */
   const setDirection = useCallback((x: number, y: number) => {
-    getSnake()?.setDir(x, y);
-    setActiveDir({ x, y });
+    const result = getSnake()?.setDir(x, y);
+    if (result === "ok") {
+      setActiveDir({ x, y });
+      setSteerBlocked(false);
+    } else if (result === "blocked") {
+      setActiveDir({ x, y });
+      setSteerBlocked(true);
+    }
   }, []);
 
-  /** Clear highlight only — snake keeps last direction */
   const clearActiveDir = useCallback(() => {
     setActiveDir(null);
+    setSteerBlocked(false);
   }, []);
 
-  // sketch.js playing loop ≈ frameRate(5)
   useEffect(() => {
     if (status !== "playing") return;
 
@@ -110,7 +118,6 @@ export function useSnakeGame() {
     return () => clearInterval(id);
   }, [status, syncFromWorld]);
 
-  // Keyboard: press = highlight + steer, release = clear highlight
   useEffect(() => {
     if (Platform.OS !== "web") return;
 
@@ -168,6 +175,7 @@ export function useSnakeGame() {
     score,
     hiScore,
     activeDir,
+    steerBlocked,
     startGame: start,
     setDirection,
     clearActiveDir,
