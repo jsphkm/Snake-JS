@@ -1,6 +1,7 @@
 import {
   createContext,
   useContext,
+  useEffect,
   useMemo,
   useState,
   type ReactNode,
@@ -31,9 +32,14 @@ const ThemeContext = createContext<ThemeContextValue | null>(null);
 export function ThemeProvider({ children }: { children: ReactNode }) {
   const system = useColorScheme();
   const [mode, setMode] = useState<ThemeMode>("system");
+  const [mounted, setMounted] = useState(false);
   const [loaded] = useFonts({
     JetBrainsMonoNL: require("../assets/fonts/JetBrainsMonoNL-Regular.ttf"),
   });
+
+  useEffect(() => {
+      setMounted(true);
+  }, []);
 
   const value = useMemo(() => {
     const scheme = resolveScheme(mode, system);
@@ -47,7 +53,7 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
     };
   }, [mode, system]);
 
-  if (!loaded) return null;
+  if (!loaded || !mounted) return null;
 
   return (
     <ThemeContext.Provider value={value}>{children}</ThemeContext.Provider>
