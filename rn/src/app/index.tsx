@@ -7,7 +7,6 @@ import { GameBoard } from "../components/GameBoard";
 import { Controls } from "../components/Controls";
 import { ScoreHud } from "../components/ScoreHud";
 
-/** Portrait: height reserved under the board for the joystick */
 const JOYSTICK_SLOT = 180;
 const SCORE_HUD = 54;
 const PAGE_PAD = 24;
@@ -24,10 +23,13 @@ export default function Index() {
     score,
     hiScore,
     activeDir,
+    steerBlocked,
     startGame,
     setDirection,
     clearActiveDir,
   } = useSnakeGame();
+
+  const travelDir = snake ? snake.facing() : null;
 
   const boardSize = useMemo(() => {
     if (isLandscape) {
@@ -44,6 +46,8 @@ export default function Index() {
     <Controls
       enabled={state === "playing"}
       activeDir={activeDir}
+      travelDir={travelDir}
+      steerBlocked={steerBlocked}
       onDirection={setDirection}
       onRelease={clearActiveDir}
     />
@@ -106,6 +110,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     padding: PAGE_PAD,
+    userSelect: "none",
   },
   landscapeWrap: {
     flex: 1,

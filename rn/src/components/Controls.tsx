@@ -6,6 +6,8 @@ type Props = {
   onRelease?: () => void;
   enabled?: boolean;
   activeDir?: Dir | null;
+  travelDir?: Dir | null;
+  steerBlocked?: boolean;
 };
 
 export function Controls({
@@ -13,11 +15,15 @@ export function Controls({
   onRelease,
   enabled = true,
   activeDir = null,
+  travelDir = null,
+  steerBlocked = false,
 }: Props) {
   return (
     <Joystick
       enabled={enabled}
       activeDir={activeDir}
+      travelDir={travelDir}
+      steerBlocked={steerBlocked}
       onDirection={(x, y) => {
         if (!enabled) return;
         onDirection(x, y);
