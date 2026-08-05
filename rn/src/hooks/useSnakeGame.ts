@@ -4,8 +4,11 @@ import { TICK_MS } from "../game/constants";
 import {
   drawGame,
   getFood,
+  getHiScore,
+  getScore,
   getSnake,
   getState,
+  setHiScore,
   startGame as worldStartGame,
   type GameState,
   type Point,
@@ -13,6 +16,8 @@ import {
 import type { Snake } from "../game/snake";
 
 export type Dir = { x: number; y: number };
+
+const HI_SCORE_KEY = "snake-hi-score";
 
 function dirFromKey(code: string, key: string): Dir | null {
   if (code === "ArrowLeft" || key === "ArrowLeft") return { x: -1, y: 0 };
@@ -22,10 +27,24 @@ function dirFromKey(code: string, key: string): Dir | null {
   return null;
 }
 
+function readStoredHiScore(): number {
+  if (Platform.OS !== "web" || typeof localStorage === "undefined") return 0;
+  const raw = localStorage.getItem(HI_SCORE_KEY);
+  const n = raw ? Number(raw) : 0;
+  return Number.isFinite(n) && n > 0 ? Math.floor(n) : 0;
+}
+
+function writeStoredHiScore(value: number) {
+  if (Platform.OS !== "web" || typeof localStorage === "undefined") return;
+  localStorage.setItem(HI_SCORE_KEY, String(value));
+}
+
 export function useSnakeGame() {
   const [status, setStatus] = useState<GameState>("menu");
   const [snake, setSnake] = useState<Snake | undefined>();
   const [food, setFood] = useState<Point | undefined>();
+  const [score, setScore] = useState(0);
+  const [hiScore, setHiScoreState] = useState(0);
   const [activeDir, setActiveDir] = useState<Dir | null>(null);
   /** Forces a re-render after in-place Snake mutations (same object ref). */
   const [frame, setFrame] = useState(0);
@@ -34,12 +53,28 @@ export function useSnakeGame() {
   statusRef.current = status;
   activeDirRef.current = activeDir;
 
+  // Restore high score once (web localStorage)
+  useEffect(() => {
+    const stored = readStoredHiScore();
+    if (stored > 0) {
+      setHiScore(stored);
+      setHiScoreState(stored);
+    }
+  }, []);
+
   const syncFromWorld = useCallback(() => {
     const nextFood = getFood();
     const nextState = getState();
+    const nextScore = getScore();
+    const nextHi = getHiScore();
     setStatus(nextState);
     setSnake(getSnake());
     setFood(nextFood ? { ...nextFood } : undefined);
+    setScore(nextScore);
+    setHiScoreState((prev) => {
+      if (nextHi > prev) writeStoredHiScore(nextHi);
+      return nextHi;
+    });
     setFrame((f) => f + 1);
     if (nextState === "menu") {
       setActiveDir(null);
@@ -130,6 +165,8 @@ export function useSnakeGame() {
     snake,
     food,
     frame,
+    score,
+    hiScore,
     activeDir,
     startGame: start,
     setDirection,

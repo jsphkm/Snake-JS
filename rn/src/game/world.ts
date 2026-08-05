@@ -7,6 +7,8 @@ export type Point = { x: number; y: number };
 let snake: Snake | undefined;
 let food: Point | undefined;
 let state: GameState = "menu";
+let score = 0;
+let hiScore = 0;
 
 /** sketch.js foodLocation() */
 function foodLocation() {
@@ -20,6 +22,7 @@ function startGame() {
   snake = new Snake(COLS, ROWS);
   food = { x: 0, y: 0 };
   foodLocation();
+  score = 0;
   state = "playing";
 }
 
@@ -31,6 +34,8 @@ function drawGame(): GameState {
   if (!snake || !food || state !== "playing") return state;
 
   if (snake.eat(food)) {
+    score += 1;
+    if (score > hiScore) hiScore = score;
     foodLocation();
   }
   snake.update();
@@ -53,6 +58,21 @@ function getFood() {
   return food;
 }
 
+function getScore() {
+  return score;
+}
+
+function getHiScore() {
+  return hiScore;
+}
+
+/** Seed / restore a persisted high score (e.g. from localStorage). */
+function setHiScore(value: number) {
+  if (Number.isFinite(value) && value > hiScore) {
+    hiScore = Math.floor(value);
+  }
+}
+
 export {
   foodLocation,
   startGame,
@@ -60,4 +80,7 @@ export {
   getState,
   getSnake,
   getFood,
+  getScore,
+  getHiScore,
+  setHiScore,
 };
