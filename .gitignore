@@ -129,6 +129,13 @@ typings/
 # DynamoDB Local files
 .dynamodb/
 
+# Expo static web export
+rn/dist/
+
+# AWS CDK
+infra/cdk.out/
+infra/cdk.context.json
+
 ### SublimeText ###
 # Cache files for Sublime Text
 *.tmlanguage.cache
