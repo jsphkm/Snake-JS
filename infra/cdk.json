@@ -1,0 +1,19 @@
+{
+    "app": "go run .",
+    "watch": {
+        "include": ["**"],
+        "exclude": [
+            "README*",
+            "cdk*.json",
+            "**/*.d.ts",
+            "**/*.js",
+            "tsconfig.json",
+            "package*",
+            "go.sum",
+            "**/*test.go"
+        ]
+    },
+    "context": {
+        "@aws-cdk/aws-s3:createDefaultLoggingPolicy": true
+    }
+}
