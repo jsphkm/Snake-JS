@@ -6,16 +6,17 @@ import { useTheme } from "../theme-context";
 type Props = {
   snake: Snake;
   food: { x: number; y: number };
+  frame: number;
 };
 
-export function GameBoard({ snake, food }: Props) {
+export function GameBoard({ snake, food, frame }: Props) {
   const { colors } = useTheme();
 
   return (
     <View style={[styles.grid, { width: BOARD, height: BOARD }]}>
       {snake.body.map((part, i) => (
         <View
-          key={`s-${i}-${part.x}-${part.y}`}
+          key={`s-${frame}-${i}-${part.x}-${part.y}`}
           style={{
             position: "absolute",
             left: part.x * RES,
@@ -27,6 +28,7 @@ export function GameBoard({ snake, food }: Props) {
         />
       ))}
       <View
+        key={`f-${frame}-${food.x}-${food.y}`}
         style={{
           position: "absolute",
           left: food.x * RES,

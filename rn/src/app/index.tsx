@@ -3,10 +3,20 @@ import { useTheme } from "../theme-context";
 import { useSnakeGame } from "../hooks/useSnakeGame";
 import { Menu } from "../components/Menu";
 import { GameBoard } from "../components/GameBoard";
+import { Controls } from "../components/Controls";
 
 export default function Index() {
   const { colors, space } = useTheme();
-  const { state, snake, food, startGame } = useSnakeGame();
+  const {
+    state,
+    snake,
+    food,
+    frame,
+    activeDir,
+    startGame,
+    setDirection,
+    clearActiveDir,
+  } = useSnakeGame();
 
   return (
     <View style={[styles.page, { backgroundColor: colors.page }]}>
@@ -24,9 +34,15 @@ export default function Index() {
         {state === "menu" || !snake || !food ? (
           <Menu onStart={startGame} />
         ) : (
-          <GameBoard snake={snake} food={food} />
+          <GameBoard snake={snake} food={food} frame={frame} />
         )}
       </View>
+      <Controls
+        enabled={state === "playing"}
+        activeDir={activeDir}
+        onDirection={setDirection}
+        onRelease={clearActiveDir}
+      />
     </View>
   );
 }
