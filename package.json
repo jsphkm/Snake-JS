@@ -3,5 +3,9 @@
   "private": true,
   "workspaces": [
     "rn"
-  ]
+  ],
+  "scripts": {
+    "export:web": "npm run export:web -w rn",
+    "deploy:web": "scripts/deploy-web.sh"
+  }
 }
