@@ -1,0 +1,25 @@
+{
+  "expo": {
+    "name": "rn",
+    "slug": "rn",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "scheme": "rn",
+    "userInterfaceStyle": "automatic",
+    "ios": {},
+    "android": {
+      "predictiveBackGestureEnabled": false
+    },
+    "web": {
+      "output": "static"
+    },
+    "plugins": [
+      "expo-router",
+      "expo-image"
+    ],
+    "experiments": {
+      "typedRoutes": true,
+      "reactCompiler": true
+    }
+  }
+}

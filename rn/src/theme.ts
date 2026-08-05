@@ -1,0 +1,44 @@
+export type ThemeMode = "system" | "light" | "dark";
+export type ResolvedScheme = "light" | "dark";
+
+export const typography = {
+  fontFamily: "JetBrainsMonoNL",
+  body: 16,
+};
+
+export const space = {
+  board: 400,
+  buttonW: 160,
+  buttonH: 48,
+};
+
+export const palette = {
+  light: {
+    page: "#eeeeee",
+    board: "#dcdcdc",
+    button: "#000000",
+    buttonPressed: "#282828",
+    buttonLabel: "#ffffff",
+    hint: "#000000",
+    statusBar: "dark" as const,
+  },
+  dark: {
+    page: "#222222",
+    board: "#2a2a2a",
+    button: "#ffffff",
+    buttonPressed: "#d0d0d0",
+    buttonLabel: "#000000",
+    hint: "#eeeeee",
+    statusBar: "light" as const,
+  },
+};
+
+export type ThemeColors = (typeof palette)["light"];
+
+export function resolveScheme(
+  mode: ThemeMode,
+  system: ResolvedScheme | null | undefined
+): ResolvedScheme {
+  if (mode === "light" || mode === "dark") return mode;
+  return system === "dark" ? "dark" : "light";
+}

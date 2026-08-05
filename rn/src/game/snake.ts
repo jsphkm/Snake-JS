@@ -1,30 +1,37 @@
-class Snake {
-  constructor() {
+import { COLS, ROWS } from "./constants";
+
+export class Snake {
+  body: { x: number; y: number }[];
+  xdir: number;
+  ydir: number;
+  len: number;
+
+  constructor(cols: number, rows: number) {
     this.body = [];
-    this.body[0] = createVector(floor(w / 2), floor(h / 2));
+    this.body[0] = {
+      x: Math.floor(cols / 2),
+      y: Math.floor(rows / 2),
+    };
     this.xdir = 0;
     this.ydir = 0;
     this.len = 0;
   }
 
-  setDir(x, y) {
+  setDir(x: number, y: number) {
     this.xdir = x;
     this.ydir = y;
   }
 
   update() {
-    const head = this.body[this.body.length - 1].copy();
+    const head = { ...this.body[this.body.length - 1] };
     this.body.shift();
     head.x += this.xdir;
     head.y += this.ydir;
     this.body.push(head);
-
-    // this.body[0].x += this.xdir;
-    // this.body[0].y += this.ydir;
   }
 
   grow() {
-    const head = this.body[this.body.length - 1].copy();
+    const head = { ...this.body[this.body.length - 1] };
     this.len += 1;
     this.body.push(head);
   }
@@ -32,7 +39,7 @@ class Snake {
   endGame() {
     const x = this.body[this.body.length - 1].x;
     const y = this.body[this.body.length - 1].y;
-    if (x > w - 1 || x < 0 || y > h - 1 || y < 0) {
+    if (x > COLS - 1 || x < 0 || y > ROWS - 1 || y < 0) {
       return true;
     }
 
@@ -45,7 +52,7 @@ class Snake {
     return false;
   }
 
-  eat(pos) {
+  eat(pos: { x: number; y: number }) {
     const x = this.body[this.body.length - 1].x;
     const y = this.body[this.body.length - 1].y;
     if (x === pos.x && y === pos.y) {
@@ -53,13 +60,5 @@ class Snake {
       return true;
     }
     return false;
-  }
-
-  show() {
-    for (let i = 0; i < this.body.length; i += 1) {
-      fill(0);
-      noStroke();
-      rect(this.body[i].x, this.body[i].y, 1, 1);
-    }
   }
 }

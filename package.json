@@ -1,0 +1,7 @@
+{
+  "name": "snake-js",
+  "private": true,
+  "workspaces": [
+    "rn"
+  ]
+}
