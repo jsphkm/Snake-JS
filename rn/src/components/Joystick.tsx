@@ -12,11 +12,8 @@ type Props = {
   onDirection: (x: number, y: number) => void;
   onRelease?: () => void;
   enabled?: boolean;
-  /** Keyboard / last accepted-or-blocked press highlight when not dragging */
   activeDir?: Dir | null;
-  /** Snake facing (for reverse = red) */
   travelDir?: Dir | null;
-  /** Last setDir was a blocked reverse */
   steerBlocked?: boolean;
 };
 
@@ -75,7 +72,6 @@ function applyKnob(
   }
 }
 
-/** Block page text selection while the stick is held (web). */
 function lockWebSelection() {
   if (Platform.OS !== "web" || typeof document === "undefined") return;
   document.body.style.userSelect = "none";
@@ -160,7 +156,6 @@ export function Joystick({
           if (Platform.OS === "web" && typeof document !== "undefined") {
             document.addEventListener("selectstart", preventSelectStart, true);
           }
-          // Keep receiving moves anywhere in the window while pressed
           const ne = evt.nativeEvent as {
             pointerId?: number;
             target?: Element;
@@ -203,14 +198,12 @@ export function Joystick({
           endDrag();
         },
       }),
-    // endDrag closes over refs; recreate once
     // eslint-disable-next-line react-hooks/exhaustive-deps
     []
   );
 
   const displayDir = holdDir ?? activeDir;
   const active = dirKey(displayDir);
-  // Red when the lit direction is a reverse of facing (or last press was blocked)
   const blocked =
     !!displayDir &&
     (isReverse(travelDir, displayDir) ||
