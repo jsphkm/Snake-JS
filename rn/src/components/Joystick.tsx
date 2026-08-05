@@ -152,7 +152,6 @@ const styles = StyleSheet.create({
     borderRadius: BASE_SIZE / 2,
     alignItems: "center",
     justifyContent: "center",
-    marginTop: 20,
     overflow: "hidden",
   },
   knob: {
