@@ -4,6 +4,8 @@ export class Snake {
   body: { x: number; y: number }[];
   xdir: number;
   ydir: number;
+  nextXdir: number;
+  nextYdir: number;
   len: number;
 
   constructor(cols: number, rows: number) {
@@ -14,15 +16,41 @@ export class Snake {
     };
     this.xdir = 0;
     this.ydir = 0;
+    this.nextXdir = 0;
+    this.nextYdir = 0;
     this.len = 0;
   }
 
-  setDir(x: number, y: number) {
-    this.xdir = x;
-    this.ydir = y;
+  facing(): { x: number; y: number } {
+    if (this.xdir !== 0 || this.ydir !== 0) {
+      return { x: this.xdir, y: this.ydir };
+    }
+    return { x: this.nextXdir, y: this.nextYdir };
+  }
+
+  /**
+   * Queue a steer for the next tick.
+   * Reverse is checked against facing() to prevent fast turn to 
+   * 180° into the body, and queued steers still block reverse direction.
+   */
+  setDir(x: number, y: number): "ok" | "blocked" {
+    const face = this.facing();
+    if (
+      (face.x !== 0 || face.y !== 0) &&
+      x === -face.x &&
+      y === -face.y
+    ) {
+      return "blocked";
+    }
+    this.nextXdir = x;
+    this.nextYdir = y;
+    return "ok";
   }
 
   update() {
+    this.xdir = this.nextXdir;
+    this.ydir = this.nextYdir;
+
     const head = { ...this.body[this.body.length - 1] };
     this.body.shift();
     head.x += this.xdir;

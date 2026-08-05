@@ -3,7 +3,13 @@ import { palette } from "../theme";
 
 const css = `
     html, body, #root { height: 100%; }
-    body { margin: 0; background: ${palette.light.page}; }
+    body {
+      margin: 0;
+      background: ${palette.light.page};
+      /* Avoid accidental text selection while dragging the stick */
+      user-select: none;
+      -webkit-user-select: none;
+    }
     @media (prefers-color-scheme: dark) {
         body { background: ${palette.dark.page}; }
     }
