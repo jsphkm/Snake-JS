@@ -15,7 +15,7 @@
     },
     "plugins": [
       "expo-router",
-      "expo-image"
+      "expo-image",
     ],
     "experiments": {
       "typedRoutes": true,
